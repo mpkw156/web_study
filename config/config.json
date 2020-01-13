@@ -4,7 +4,7 @@
     "port": 4000,
     "username": "root",
     "password": "gudehsdl12",
-    "database": "test1",
+    "database": "database_test",
     "dialect": "mariadb",
     "operatorsAliases": false
   },

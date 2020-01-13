@@ -26,7 +26,7 @@ const db = {};
 module.exports = db;
 export { sequelize, Sequelize, User };
 
-sequelize.sync().then(() => {
+sequelize.sync({force: true}).then(() => {
     console.log('✓ DB connection success.');
 })
 .catch(err => {
