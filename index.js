@@ -2,6 +2,7 @@
 
 const Koa = require('koa');
 const app = new Koa();
+const ejs = require('ejs');
 import Router from 'koa-router';
 import bodyPaerser from 'koa-bodyparser';
 import api from './api';
@@ -11,9 +12,9 @@ const router = new Router();
 
 const port = process.env.PORT || 3000;
 
-app.use(ctx => {
+/*app.use(ctx => {
     ctx.body = 'hello';
-});
+});*/
 
 app.listen(port, () => {
     console.log('server is listening to port ' + port);
