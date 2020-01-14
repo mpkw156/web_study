@@ -1,24 +1,22 @@
-export const User = (sequelize, DataTypes) => {
-//module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('user', {
-        user_id : {
-            type : DataTypes.INTEGER,
-            primaryKey : true,
-            autoIncrement : true
-        },
-        id : {
-            type : DataTypes.STRING(20),
-            allowNull : false,
-            unique : true
-        },
-        password : {
-            type : DataTypes.STRING,
-            allowNull : false
-        },
-        nickname : {
-            type : DataTypes.STRING(20),
-            allowNull : false,
-            unique : true
-        }
-    });
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+  const user = sequelize.define('user', {
+    name: {
+    
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+    password: {
+    type: DataTypes.STRING,
+    allowNull:false
+  },
+    nickname: {
+      type: DataTypes.STRING,
+      allowNull:false
+  }
+});
+  user.associate = function(models) {
+    // associations can be defined here
+  };
+  return user;
 };

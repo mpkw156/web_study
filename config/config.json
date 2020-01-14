@@ -1,29 +1,27 @@
 {
   "development": {
-    "host": "127.0.0.1",
-    "port": 4000,
     "username": "root",
     "password": "gudehsdl12",
-    "database": "database_test",
+    "database": "test",
+    "host": "127.0.0.1",
     "dialect": "mariadb",
+    "port": 4000,
     "operatorsAliases": false
   },
   "test": {
     "username": "root",
-    "password": "gudehsdl12",
-    "database": "test",
+    "password": null,
+    "database": "database_test",
     "host": "127.0.0.1",
-    "port": 4000,
-    "dialect": "mariadb",
+    "dialect": "mysql",
     "operatorsAliases": false
   },
   "production": {
     "username": "root",
-    "password": "gudehsdl12",
-    "database": "test",
+    "password": null,
+    "database": "database_production",
     "host": "127.0.0.1",
-    "port": 4000,
-    "dialect": "mariadb",
+    "dialect": "mysql",
     "operatorsAliases": false
   }
 }

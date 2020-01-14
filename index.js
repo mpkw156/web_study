@@ -1,32 +1,34 @@
-//require('dotenv').config();
+require('dotenv').config();
 
 const Koa = require('koa');
 const app = new Koa();
-const ejs = require('ejs');
+
 import Router from 'koa-router';
 import bodyPaerser from 'koa-bodyparser';
 import api from './api';
 import { sequelize } from './models';
 
 const router = new Router();
+const path = require('path');
 
-const port = process.env.PORT || 3000;
+sequelize.sync()
+.then(()=> {
+    console.log('Connected MariaDB!')
+});
 
-/*app.use(ctx => {
-    ctx.body = 'hello';
-});*/
-
-app.listen(port, () => {
-    console.log('server is listening to port ' + port);
+app.use(ctx => {
+    ctx.body = 'Hello';
 });
 
 router.use('/api', api.routes());
 
-/*sequelize.sync().then(() => {
-    console.log('✓ DB connection success.');
-})
-.catch(err => {
-    console.error(err);
-    console.log('✗ DB connection error. Please make sure DB is running.');
-    process.exit();
-});>>메인 index.js에서 sync오류 뜰땐  /models/index.js에 넣어서 작동.*/
+app.use(router.routes()).use(router.allowedMethods());
+
+const port = process.env.PORT || 3000;
+
+app.listen(port, ()=> {
+    console.log(`Server is listening to port ` + port);
+});
+
+
+module.exports = router;

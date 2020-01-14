@@ -23,14 +23,10 @@ const sequelize = new Sequelize(
 const db = {};
 //db.User = require('./User')(sequelize, Sequelize);
 
-module.exports = db;
 export { sequelize, Sequelize, User };
 
-sequelize.sync({force: true}).then(() => {
-    console.log('✓ DB connection success.');
-})
-.catch(err => {
-    console.error(err);
-    console.log('✗ DB connection error. Please make sure DB is running.');
-    process.exit();
-});//sync error가 뜰시 models/index.js에 넣고 동작.
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+module.exports = db;
+

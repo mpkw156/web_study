@@ -24,15 +24,15 @@ export const Register = async (ctx) => {
         return;
     }
     
-    //아이디 중복체크
+    //name 중복체크
     const exist = await user.findOne({
         where: {
-            user_id : ctx.request.body.user_id
+            name : ctx.request.body.name
         }
     });
 
     if(exist != null){
-        console.log(`Register - 이미 존재하는 아이디입니다. / 입력된 아이디 : ${ctx.request.body.id}`);
+        console.log(`존재하는 아이디입니다. / 입력된 아이디 : ${ctx.request.body.name}`);
 
         ctx.status = 400;
         ctx.body = {
@@ -41,7 +41,7 @@ export const Register = async (ctx) => {
         return;
     }
 
-    const user_id = ctx.request.body.user_id;
+    const name = ctx.request.body.name;
 
     const password = crypto.createHmac('sha256', process.env.Password_KEY).update(ctx.request.body.password).digest('hex');
     /*
@@ -65,5 +65,94 @@ export const Register = async (ctx) => {
     ctx.status = 200;
     ctx.body = {
         "name" : ctx.request.body.name
+    };
+
+    
+}
+//로그인
+export const Login = async (ctx) => {
+    
+    // Joi 라이브러리를 활용해서 형식을 검사하기 위해 객체를 하나 만들어 줌.
+    const Request = Joi.object().keys({
+        id : Joi.string().alphanum().min(5).max(50).required(),
+        password : Joi.string().min(5).max(50).required()
+    });
+  
+    // 넘어온 body의 형식을 검사한다.
+    const Result = Joi.validate(ctx.request.body, Request);
+ 
+    // 만약 형식이 불일치한다면, 그 이후 문장도 실행하지 않는다.
+    if(Result.error) {
+        console.log(`Login - Joi 형식 에러`);
+        ctx.status = 400;
+        ctx.body = {
+            "error" : "001"
+        }
+        return;
+    }
+
+    // 데이터베이스에 해당하는 아이디가 있는지 검사합니다.
+    // user라는 테이블에 기입한 아이디가 있는지 확인
+    const founded = await user.findOne({
+        where: {
+            name : ctx.request.body.name
+        }
+    });
+    
+    if(founded == null){
+        console.log(`Login - 존재하지 않는 계정입니다. / 입력된 아이디 : ${ctx.request.body.name}`);
+        ctx.status = 400;
+        ctx.body = {
+            "error" : "003"
+        }
+        return;
+    }
+    
+    // db에 있는 password를  input이란 변수로 바꾸어 password가 일치하는지 확인
+    const input = crypto.createHmac('sha256', process.env.Password_KEY).update(ctx.request.body.password).digest('hex');
+    
+    if(founded.password != input){
+        console.log(`Login - 비밀번호를 틀렸습니다.`);
+        ctx.status = 400;
+        ctx.body = {
+            "error" : "004"
+        }
+        return;
+    }
+   
+    const payload = {
+        user_id : founded.user_id
+    };
+    
+    let token = null;
+    token = await generateToken(payload);
+
+    console.log(`Login - 로그인에 성공하였습니다 : 유저 - ${founded.user_id}`);
+        
+    ctx.status = 200;
+    ctx.body = {
+        "token" : token
+    };
+}
+
+//유저 일반 정보 반환
+export const CheckUser = async (ctx) => {
+    const token = ctx.header.token;
+
+    const decoded = await decodeToken(token);
+
+    console.log(`CheckUserValidate - 접속한 유저 키 : ${decoded.user_id}`);
+    
+    const founded = await user.findOne({
+        where : {
+            "user_id" : decoded.user_id
+        }
+    });
+
+    ctx.status = 200;
+    ctx.body = {
+        "name" : founded.name,
+        "password" : founded.password,
+        "nickname" : founded.nickname   
     };
 }
